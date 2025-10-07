@@ -25,9 +25,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-warnings.filterwarnings("ignore")
-tqdm.__init__ = lambda *args, **kwargs: tqdm
-
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
 
