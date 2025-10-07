@@ -305,8 +305,8 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
         train_preds = torch.sigmoid(model(X_train_t)).numpy().round()
         test_preds = torch.sigmoid(model(X_test_t)).numpy().round()
 
-    metrics(y_train, train_preds, tag)
-    metrics(y_test, test_preds, tag)
+    metrics(y_train, train_preds, f"{tag} Training")
+    metrics(y_test, test_preds, f"{tag} Testing")
 
 def metrics(y_true, y_pred, prefix):
     acc = accuracy_score(y_true, y_pred)
@@ -350,11 +350,11 @@ def q4_word_embed_fnn(X_train_prep, X_test_prep, Y_train, Y_test):
     semantic_similarity_demo(model_glove)
 
     # (b)
-    train_glove_fnn(model_glove, feature_fn=review_to_glove_avg, input_dim=100, tag="Average Feature Training",
+    train_glove_fnn(model_glove, feature_fn=review_to_glove_avg, input_dim=100, tag="Average Feature",
                     X_train=X_train_prep, X_test=X_test_prep,y_train=Y_train, y_test=Y_test)
 
     # (c)
-    train_glove_fnn(model_glove, feature_fn=review_to_glove_concat, input_dim=1000, tag="Concatenated Feature Training",
+    train_glove_fnn(model_glove, feature_fn=review_to_glove_concat, input_dim=1000, tag="Concatenated Feature",
                     X_train=X_train_prep, X_test=X_test_prep,y_train=Y_train, y_test=Y_test)
 
 def main():
