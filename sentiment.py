@@ -51,9 +51,9 @@ def data_prepare():
         PATH,
         sep="\t",
         dtype=str,
-        on_bad_lines='skip',   # 🚀 忽略格式错误的行
-        quoting=3,             # 🚀 不解析引号（防止多余tab）
-        engine='python'        # 🚀 更宽容的解析器
+        on_bad_lines='skip',   
+        quoting=3,             
+        engine='python'        
     )
 
     # rename column
@@ -269,15 +269,8 @@ def review_to_glove_concat(review, model, max_words=10):
     return np.concatenate(vectors, axis=0) 
 
 def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_train, y_test):
-    """
-    通用的训练函数：
-    - model_glove: 预训练 GloVe 模型
-    - feature_fn: 特征生成函数 (review → np.array)
-    - input_dim: 输入维度 (100 for avg, 1000 for concat)
-    - tag: 打印标识 ("Average" 或 "Concatenated")
-    """
     # 2. Generate features
-    print(f"Generating {tag.lower()} GloVe features...")
+    # print(f"Generating {tag.lower()} GloVe features...")
     X_train = np.array([feature_fn(str(x), model_glove) for x in tqdm(X_train)])
     X_test = np.array([feature_fn(str(x), model_glove) for x in tqdm(X_test)])
     # y_train = train_df["label"].values
@@ -303,7 +296,7 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
         loss = criterion(outputs, y_train_t)
         loss.backward()
         optimizer.step()
-        print(f"Epoch {epoch+1}/{EPOCHS}, Loss = {loss.item():.4f}")
+        # print(f"Epoch {epoch+1}/{EPOCHS}, Loss = {loss.item():.4f}")
 
     # 6. Evaluation
     model.eval()
