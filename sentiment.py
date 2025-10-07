@@ -1,5 +1,5 @@
 import re
-import csv
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -58,7 +58,7 @@ def data_prepare():
         PATH,
         sep="\t",
         dtype=str,  
-        quoting=csv.QUOTE_MINIMAL,
+        quoting=3,
         on_bad_lines=None,
         engine="c",
     )
