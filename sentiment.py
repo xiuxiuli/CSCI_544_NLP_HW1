@@ -1,4 +1,5 @@
 import re
+import csv
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -57,7 +58,9 @@ def data_prepare():
         PATH,
         sep="\t",
         dtype=str,  
-        quoting=3   
+        quoting=csv.QUOTE_MINIMAL,
+        on_bad_lines=None,
+        engine="c",
     )
 
     # rename column
@@ -231,7 +234,7 @@ def evaluate_model(name, model, X_train, y_train, X_test, y_test):
 def semantic_similarity_demo(model_glove):
     # (a) King - Man + Woman
     try:
-        result1 = model_glove.most_similar(positive=["king", "woman"], negative=["man"], topn=5)
+        result1 = model_glove.most_similar(positive=["king", "woman"], negative=["man"], topn=4)
         words1 = ", ".join(["king"] + [w for w, _ in result1])
         print(f"king - man + woman = {words1}")
     except KeyError as e:
