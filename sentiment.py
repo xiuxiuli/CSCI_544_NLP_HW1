@@ -1,31 +1,35 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
 import re
-import os
+import pandas as pd
 import numpy as np
-from sklearn.linear_model import Perceptron
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Perceptron, LogisticRegression
 from sklearn.svm import LinearSVC
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.exceptions import UndefinedMetricWarning
-import warnings
-warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
-
-import nltk
-nltk.download("stopwords", quiet=True)
-nltk.download("wordnet", quiet=True)
-nltk.download("omw-1.4", quiet=True)
-
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
 import gensim.downloader as loader
-from tqdm import tqdm
-tqdm = lambda x, *args, **kwargs: x
 import torch
 import torch.nn as nn
 import torch.optim as optim
+
+
+# from sklearn.exceptions import UndefinedMetricWarning
+# import warnings
+# warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
+
+# import os
+
+# nltk.download("stopwords", quiet=True)
+# nltk.download("wordnet", quiet=True)
+# nltk.download("omw-1.4", quiet=True)
+
+
+# from tqdm import tqdm
+# tqdm = lambda x, *args, **kwargs: x
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -288,14 +292,23 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
     train_cache = f"{tag}_train.npy"
     test_cache  = f"{tag}_test.npy"
 
-    if os.path.exists(train_cache) and os.path.exists(test_cache):
+    try:
         X_train = np.load(train_cache)
         X_test  = np.load(test_cache)
-    else:
+    except FileNotFoundError:
         X_train = fast_glove_features(X_train, model_glove, feature_fn, input_dim)
-        X_test  = fast_glove_features(X_test, model_glove, feature_fn, input_dim)
+        X_test  = fast_glove_features(X_test,  model_glove, feature_fn, input_dim)
         np.save(train_cache, X_train)
         np.save(test_cache, X_test)
+
+    # if os.path.exists(train_cache) and os.path.exists(test_cache):
+    #     X_train = np.load(train_cache)
+    #     X_test  = np.load(test_cache)
+    # else:
+    #     X_train = fast_glove_features(X_train, model_glove, feature_fn, input_dim)
+    #     X_test  = fast_glove_features(X_test, model_glove, feature_fn, input_dim)
+    #     np.save(train_cache, X_train)
+    #     np.save(test_cache, X_test)
 
     # 3. Convert to tensors
     X_train_t = torch.tensor(X_train, dtype=torch.float32)
