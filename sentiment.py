@@ -11,9 +11,10 @@ import warnings
 warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
 
 import nltk
-nltk.download("stopwords")
-nltk.download("wordnet")
-nltk.download("omw-1.4")
+nltk.download("stopwords", quiet=True)
+nltk.download("wordnet", quiet=True)
+nltk.download("omw-1.4", quiet=True)
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -23,6 +24,9 @@ from tqdm import tqdm
 import torch
 import torch.nn as nn
 import torch.optim as optim
+
+warnings.filterwarnings("ignore")
+tqdm.__init__ = lambda *args, **kwargs: tqdm
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -263,7 +267,7 @@ def review_to_glove_concat(review, model, max_words=10):
             vectors.append(np.zeros(model.vector_size))
     
     while len(vectors) < max_words:
-        vectors.append(np.zeros(model.vector_szie))
+        vectors.append(np.zeros(model.vector_size))
     
     return np.concatenate(vectors, axis=0) 
 
