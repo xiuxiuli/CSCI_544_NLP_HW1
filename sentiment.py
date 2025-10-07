@@ -270,13 +270,14 @@ def review_to_glove_concat(review, model, max_words=10):
     
     return np.concatenate(vectors, axis=0) 
 
-def fast_glove_features(texts, model, feature_fn):
+def fast_glove_features(texts, model, feature_fn, input_dim=100):
     vocab = set(model.key_to_index)
     result = []
     for t in texts:
         words = [w for w in str(t).split() if w in vocab]
         if not words:
-            result.append(np.zeros(model.vector_size))
+            # 动态返回匹配 input_dim 的全零向量
+            result.append(np.zeros(input_dim))
         else:
             result.append(feature_fn(" ".join(words), model))
     return np.array(result)
@@ -291,8 +292,8 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
         X_train = np.load(train_cache)
         X_test  = np.load(test_cache)
     else:
-        X_train = fast_glove_features(X_train, model_glove, feature_fn)
-        X_test  = fast_glove_features(X_test, model_glove, feature_fn)
+        X_train = fast_glove_features(X_train, model_glove, feature_fn, input_dim)
+        X_test  = fast_glove_features(X_test, model_glove, feature_fn, input_dim)
         np.save(train_cache, X_train)
         np.save(test_cache, X_test)
 
