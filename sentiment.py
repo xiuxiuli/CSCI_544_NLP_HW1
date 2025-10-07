@@ -348,7 +348,7 @@ def q4_word_embed_fnn(X_train_prep, X_test_prep, Y_train, Y_test):
     semantic_similarity_demo(model_glove)
 
     # (b)
-    train_glove_fnn(model_glove, feature_fn=review_to_glove_avg, input_dim=1000, tag="Average",
+    train_glove_fnn(model_glove, feature_fn=review_to_glove_avg, input_dim=100, tag="Average",
                     X_train=X_train_prep, X_test=X_test_prep,y_train=Y_train, y_test=Y_test)
 
     # (c)
