@@ -56,10 +56,8 @@ def data_prepare():
     df = pd.read_csv(
         PATH,
         sep="\t",
-        dtype=str,
-        on_bad_lines='skip',   
-        quoting=3,             
-        engine='python'        
+        dtype=str,  
+        quoting=3   
     )
 
     # rename column
@@ -234,7 +232,7 @@ def semantic_similarity_demo(model_glove):
     # (a) King - Man + Woman
     try:
         result1 = model_glove.most_similar(positive=["king", "woman"], negative=["man"], topn=5)
-        words1 = ", ".join([w for w, _ in result1])
+        words1 = ", ".join(["king"] + [w for w, _ in result1])
         print(f"king - man + woman = {words1}")
     except KeyError as e:
         print(f"Word not found in vocabulary: {e}")
