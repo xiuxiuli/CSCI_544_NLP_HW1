@@ -21,6 +21,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 import gensim.downloader as loader
 from tqdm import tqdm
+tqdm = lambda x, *args, **kwargs: x
 import torch
 import torch.nn as nn
 import torch.optim as optim
