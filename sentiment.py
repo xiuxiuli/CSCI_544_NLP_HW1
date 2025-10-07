@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import re
+import os
 import numpy as np
 from sklearn.linear_model import Perceptron
 from sklearn.svm import LinearSVC
@@ -269,13 +270,31 @@ def review_to_glove_concat(review, model, max_words=10):
     
     return np.concatenate(vectors, axis=0) 
 
+def fast_glove_features(texts, model, feature_fn):
+    vocab = set(model.key_to_index)
+    result = []
+    for t in texts:
+        words = [w for w in str(t).split() if w in vocab]
+        if not words:
+            result.append(np.zeros(model.vector_size))
+        else:
+            result.append(feature_fn(" ".join(words), model))
+    return np.array(result)
+
+
 def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_train, y_test):
-    # 2. Generate features
-    # print(f"Generating {tag.lower()} GloVe features...")
-    X_train = np.array([feature_fn(str(x), model_glove) for x in tqdm(X_train)])
-    X_test = np.array([feature_fn(str(x), model_glove) for x in tqdm(X_test)])
-    # y_train = train_df["label"].values
-    # y_test = test_df["label"].values
+    # ====== optimized, caceh features ======
+    train_cache = f"{tag}_train.npy"
+    test_cache  = f"{tag}_test.npy"
+
+    if os.path.exists(train_cache) and os.path.exists(test_cache):
+        X_train = np.load(train_cache)
+        X_test  = np.load(test_cache)
+    else:
+        X_train = fast_glove_features(X_train, model_glove, feature_fn)
+        X_test  = fast_glove_features(X_test, model_glove, feature_fn)
+        np.save(train_cache, X_train)
+        np.save(test_cache, X_test)
 
     # 3. Convert to tensors
     X_train_t = torch.tensor(X_train, dtype=torch.float32)
@@ -289,15 +308,25 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
     # 5. Training loop
-    EPOCHS = 5
+    if input_dim == 1000:
+        EPOCHS = 2   # 拼接版本更慢
+    else:
+        EPOCHS = 5
+
+    BATCH = 512
+    n = len(X_train_t)
+
     for epoch in range(EPOCHS):
         model.train()
-        optimizer.zero_grad()
-        outputs = model(X_train_t)
-        loss = criterion(outputs, y_train_t)
-        loss.backward()
-        optimizer.step()
-        # print(f"Epoch {epoch+1}/{EPOCHS}, Loss = {loss.item():.4f}")
+        total_loss = 0.0
+        for i in range(0, n, BATCH):
+            xb = X_train_t[i:i+BATCH]
+            yb = y_train_t[i:i+BATCH]
+            optimizer.zero_grad()
+            loss = criterion(model(xb), yb)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
 
     # 6. Evaluation
     model.eval()
