@@ -305,8 +305,8 @@ def train_glove_fnn(model_glove, feature_fn, input_dim, tag, X_train, X_test, y_
         train_preds = torch.sigmoid(model(X_train_t)).numpy().round()
         test_preds = torch.sigmoid(model(X_test_t)).numpy().round()
 
-    metrics(y_train, train_preds, "Train")
-    metrics(y_test, test_preds, "Test")
+    metrics(y_train, train_preds, f"FNN ({tag}) Training")
+    metrics(y_test, test_preds, f"FNN ({tag}) Testing")
 
 def metrics(y_true, y_pred, prefix):
     acc = accuracy_score(y_true, y_pred)
