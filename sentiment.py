@@ -46,7 +46,14 @@ class FeedForwardNN(nn.Module):
 
 def data_prepare():
     # read file
-    df = pd.read_csv(PATH, sep="\t", dtype=str)
+    df = pd.read_csv(
+        PATH,
+        sep="\t",
+        dtype=str,
+        on_bad_lines='skip',   # 🚀 忽略格式错误的行
+        quoting=3,             # 🚀 不解析引号（防止多余tab）
+        engine='python'        # 🚀 更宽容的解析器
+    )
 
     # rename column
     df = df[["review_body", "star_rating"]].rename(
