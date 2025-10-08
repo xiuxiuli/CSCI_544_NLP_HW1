@@ -59,7 +59,7 @@ def data_prepare():
         sep="\t",
         dtype=str,  
         quoting=3,
-        on_bad_lines=None,
+        on_bad_lines="skip",
         engine="c",
     )
 
