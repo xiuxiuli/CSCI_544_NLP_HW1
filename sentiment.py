@@ -59,8 +59,9 @@ def data_prepare():
         sep="\t",
         dtype=str,  
         quoting=csv.QUOTE_NONE,
-        on_bad_lines="warn",
-        engine="python",
+        on_bad_lines="skip",
+        engine="c",
+        low_memory=False
     )
 
     # rename column
