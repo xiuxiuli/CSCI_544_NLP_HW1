@@ -71,6 +71,7 @@ def data_prepare():
     # convert rating into number
     df["rating"] = pd.to_numeric(df["rating"], errors="coerce")  # errors="coerce" handles bad data to 'NaN'
     df = df.dropna(subset=["review", "rating"]) # drop those value='NaN'
+    df = df[df["review"].str.strip().astype(bool)]
 
     # before data wash, print qyt of Positive / Negative / Neutral
     pos_count = (df["rating"] > 3).sum()
