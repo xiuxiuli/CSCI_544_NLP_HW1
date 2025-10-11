@@ -75,12 +75,12 @@ def data_prepare():
     # drop na, drop ""
     df = df.dropna(subset=["review", "rating"]) # drop those value='NaN'
     df = df[df["review"].str.strip().astype(bool)]
-    df = df[df["rating"].between(1, 5)]
+    df = df[df["rating"].between(0, 5)]
 
     # before data wash, print qyt of Positive / Negative / Neutral
-    pos_count = (df["rating"] > 3).sum()+20
-    neg_count = (df["rating"] <= 2).sum()+20
-    neu_count = (df["rating"] == 3).sum()+20
+    pos_count = (df["rating"] > 3).sum()
+    neg_count = (df["rating"] <= 2).sum()
+    neu_count = (df["rating"] == 3).sum()
 
     # print as required in iii
     print(f"Positive reviews: {pos_count}")
