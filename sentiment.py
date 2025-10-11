@@ -58,8 +58,8 @@ def data_prepare():
         PATH,
         sep="\t",
         dtype=str,  
-        quoting=csv.QUOTE_NONE,
-        on_bad_lines="skip",
+        quoting=csv.QUOTE_MINIMAL,
+        on_bad_lines=None,
         engine="c",
         low_memory=False
     )
