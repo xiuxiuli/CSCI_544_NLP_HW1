@@ -60,7 +60,7 @@ def data_prepare():
         dtype=str,  
         quoting=csv.QUOTE_MINIMAL,
         on_bad_lines="error",
-        engine="c",
+        engine="python",
         low_memory=False
     )
 
