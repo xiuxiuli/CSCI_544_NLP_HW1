@@ -60,7 +60,7 @@ def data_prepare():
         dtype=str,  
         quoting=csv.QUOTE_MINIMAL,
         on_bad_lines="skip",
-        engine="c"
+        engine="python"
     )
 
     # rename column
